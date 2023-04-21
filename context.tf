@@ -1,13 +1,28 @@
+#
+# ONLY EDIT THIS FILE IN https://github.com/bigfantech-cloud/terraform-null-label/blob/main/exports/
+# All other instances of this file should be a copy of that one
+
+# This is customised version of `label` module from cloudposse. Courtesy: [cloudposse](https://cloudposse.com)
+
+# Modules should access the whole context as `module.this.context`
+# to get the input variables with nulls for defaults,
+# for example `context = module.this.context`,
+# and access individual variables as `module.this.<var>`,
+# with final values filled in.
+#
+# For example, when using defaults, `module.this.context.delimiter`
+# will be null, and `module.this.delimiter` will be `-` (hyphen).
+#
+
 module "this" {
-  source  = "app.terraform.io/daphnetech/label/null"
+  source  = "bigfantech-cloud/label/null"
   version = "1.0.0"
 
   enabled             = var.enabled
-  product_name        = var.product_name
-  tenant              = var.tenant
+  project_name        = var.project_name
+  aws_estate          = var.aws_estate
   environment         = var.environment
   stage               = var.stage
-  name                = var.name
   delimiter           = var.delimiter
   attributes          = var.attributes
   tags                = var.tags
@@ -19,6 +34,8 @@ module "this" {
   label_value_case    = var.label_value_case
   descriptor_formats  = var.descriptor_formats
   labels_as_tags      = var.labels_as_tags
+  name                = var.name
+  namespace           = var.namespace
 
   context = var.context
 }
@@ -27,11 +44,10 @@ variable "context" {
   type = any
   default = {
     enabled             = true
-    product_name        = null
-    tenant              = null
+    project_name        = null
+    aws_estate          = null
     environment         = null
     stage               = null
-    name                = null
     delimiter           = null
     attributes          = []
     tags                = {}
@@ -50,6 +66,8 @@ variable "context" {
     # by setting `labels_as_tags` to `[]`, so we need
     # a different sentinel to indicate "default"
     labels_as_tags = ["unset"]
+    name           = null
+    namespace      = null
   }
   description = <<-EOT
     Single object for setting entire context at once.
@@ -76,22 +94,22 @@ variable "enabled" {
   description = "Set to false to prevent the module from creating any resources"
 }
 
-variable "product_name" {
+variable "project_name" {
   type        = string
   default     = null
-  description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
+  description = "ID element. Usually an abbreviation of project or brand name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
 }
 
-variable "tenant" {
+variable "aws_estate" {
   type        = string
   default     = null
-  description = "ID element _(Rarely used, not included by default)_. A customer identifier, indicating who this instance of a resource is for"
+  description = "ID element _(Rarely used, not included by default)_. An AWS account identifier"
 }
 
 variable "environment" {
   type        = string
   default     = null
-  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+  description = "ID element. Usually used for role 'prod', 'staging', 'dev', 'UAT', OR region e.g. 'uw2', 'us-west-2'"
 }
 
 variable "stage" {
@@ -100,22 +118,12 @@ variable "stage" {
   description = "ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release'"
 }
 
-variable "name" {
-  type        = string
-  default     = null
-  description = <<-EOT
-    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
-    This is the only ID element not also included as a `tag`.
-    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
-    EOT
-}
-
 variable "delimiter" {
   type        = string
   default     = null
   description = <<-EOT
-    Delimiter to be used between ID elements.
-    Defaults to `-` (hyphen). Set to `""` to use no delimiter at all.
+    Delimiter to be used between ID elements. Set to `""` to use no delimiter at all.
+    Default = "-" (hyphen).
   EOT
 }
 
@@ -139,7 +147,6 @@ variable "labels_as_tags" {
     Tags with empty values will not be included in the `tags` output.
     Set to `[]` to suppress all generated tags.
     **Notes:**
-      The value of the `name` tag, if included, will be the `id`, not the `name`.
       Unlike other `null-label` inputs, the initial setting of `labels_as_tags` cannot be
       changed in later chained modules. Attempts to change it will be silently ignored.
     EOT
@@ -169,8 +176,8 @@ variable "label_order" {
   default     = null
   description = <<-EOT
     The order in which the labels (ID elements) appear in the `id`.
-    Defaults to ["product_name", "environment", "stage", "name", "attributes"].
-    You can omit any of the 6 labels ("tenant" is the 6th), but at least one must be present.
+    Defaults to ["project_name", "aws_estate", "environment", "stage", "attributes"].
+    You can omit any of the 5 labels, but at least one must be present.
     EOT
 }
 
@@ -250,4 +257,20 @@ variable "descriptor_formats" {
     identical to how they appear in `id`.
     Default is `{}` (`descriptors` output will be empty).
     EOT
+}
+
+variable "name" {
+  type        = string
+  default     = null
+  description = <<-EOT
+    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
+    This is the only ID element not also included as a `tag`.
+    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
+    EOT
+}
+
+variable "namespace" {
+  type        = string
+  default     = null
+  description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
 }
