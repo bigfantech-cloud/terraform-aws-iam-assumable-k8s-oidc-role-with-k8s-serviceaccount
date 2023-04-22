@@ -20,7 +20,7 @@ variable "iam_role_name" {
 }
 
 variable "iam_policies" {
-  description = "IAM policy ARN to attach to Kubernetes ServiceAccount federated IAM role"
+  description = "List of IAM policies JSON to attach to Kubernetes ServiceAccount federated IAM role"
   type        = list(string)
 }
 
