@@ -4,7 +4,7 @@ data "aws_partition" "current" {}
 
 locals {
   aws_account_id = data.aws_caller_identity.current.account_id
-  partition      = data.aws_partition.current.partition
+  aws_partition  = data.aws_partition.current.partition
   iam_role_name  = var.iam_role_name != null ? var.iam_role_name : "${var.namespace}-${var.service_account_name}-K8sServiceAccountRole"
 }
 
@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "assume_policy" {
       condition {
         test     = "ArnLike"
         variable = "aws:PrincipalArn"
-        values   = ["arn:${local.partition}:iam::${local.aws_account_id}:role/${local.iam_role_name}"]
+        values   = ["arn:${local.aws_partition}:iam::${local.aws_account_id}:role/${local.iam_role_name}"]
       }
     }
   }
