@@ -19,9 +19,16 @@ variable "iam_role_name" {
   default     = null
 }
 
-variable "iam_policies" {
-  description = "List of IAM policies JSON to attach to Kubernetes ServiceAccount federated IAM role"
+variable "policy_jsons_list" {
+  description = "List of policies JSON"
   type        = list(string)
+  default     = []
+}
+
+variable "policy_arns_list" {
+  description = "List of policies ARNS"
+  type        = list(string)
+  default     = []
 }
 
 variable "allow_self_assume_role" {

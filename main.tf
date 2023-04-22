@@ -56,26 +56,34 @@ data "aws_iam_policy_document" "assume_policy" {
   }
 }
 
-resource "aws_iam_policy" "policy" {
-  name   = "${local.iam_role_name}Policy"
-  policy = data.aws_iam_policy_document.policy_document.json
-
-  tags = module.this.tags
-}
-
-data "aws_iam_policy_document" "policy_document" {
-  source_policy_documents = var.iam_policies
-}
-
 resource "aws_iam_role" "role" {
   name               = local.iam_role_name
   assume_role_policy = data.aws_iam_policy_document.assume_policy.json
+}
+
+data "aws_iam_policy_document" "policy_document" {
+  count                   = var.policy_jsons_list != [] ? 1 : 0
+  source_policy_documents = var.policy_jsons
+}
+
+resource "aws_iam_policy" "policy" {
+  count = var.policy_jsons_list != [] ? 1 : 0
+
+  name   = "${local.iam_role_name}Policy"
+  policy = data.aws_iam_policy_document.policy_document[0].json
 }
 
 resource "aws_iam_policy_attachment" "policy_attach" {
   name       = "${local.iam_role_name}_policy_attach"
   roles      = [aws_iam_role.role.name]
   policy_arn = aws_iam_policy.policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "policy" {
+  for_each = toset(var.policy_arns_list)
+
+  role       = aws_iam_role.role.name
+  policy_arn = each.value
 }
 
 #---
