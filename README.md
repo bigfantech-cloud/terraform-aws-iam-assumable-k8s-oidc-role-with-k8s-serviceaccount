@@ -1,3 +1,3 @@
 # Purpose
 
-Creates AWS IAM role with Kubernetes federated OIDC permission, associated with a Kubernetes ServiceAccount.
+Creates AWS IAM role with Kubernetes federated OIDC permission, associated with an optional Kubernetes ServiceAccount.

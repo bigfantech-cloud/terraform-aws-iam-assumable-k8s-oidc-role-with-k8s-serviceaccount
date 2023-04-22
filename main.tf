@@ -1,3 +1,13 @@
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
+
+locals {
+  aws_account_id = data.aws_caller_identity.current.account_id
+  partition      = data.aws_partition.current.partition
+  iam_role_name  = var.iam_role_name != null ? var.iam_role_name : "${var.namespace}-${var.service_account_name}-K8sServiceAccountRole"
+}
+
 data "aws_iam_policy_document" "assume_policy" {
   statement {
     sid     = "GrantK8sSAAccessToAWS"
@@ -22,31 +32,59 @@ data "aws_iam_policy_document" "assume_policy" {
       ]
     }
   }
+
+  dynamic "statement" {
+    # https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/
+    for_each = var.allow_self_assume_role ? ["true"] : []
+
+    content {
+      sid     = "ExplicitSelfRoleAssumption"
+      effect  = "Allow"
+      actions = ["sts:AssumeRole"]
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      condition {
+        test     = "ArnLike"
+        variable = "aws:PrincipalArn"
+        values   = ["arn:${local.partition}:iam::${local.aws_account_id}:role/${local.iam_role_name}"]
+      }
+    }
+  }
 }
 
 resource "aws_iam_policy" "policy" {
-  name   = "${var.namespace}_${var.service_account_name}_K8sServiceAccountPolicy"
+  name   = "${local.iam_role_name}Policy"
   policy = data.aws_iam_policy_document.policy_document.json
 
   tags = module.this.tags
 }
 
 data "aws_iam_policy_document" "policy_document" {
-  source_policy_documents = var.policies
+  source_policy_documents = var.iam_policies
 }
 
 resource "aws_iam_role" "role" {
-  name               = "${var.namespace}_${var.service_account_name}_K8sServiceAccountRole"
+  name               = local.iam_role_name
   assume_role_policy = data.aws_iam_policy_document.assume_policy.json
 }
 
 resource "aws_iam_policy_attachment" "policy_attach" {
-  name       = "${var.namespace}_${var.service_account_name}_policy_attach"
+  name       = "${local.iam_role_name}_policy_attach"
   roles      = [aws_iam_role.role.name]
   policy_arn = aws_iam_policy.policy.arn
 }
 
+#---
+# K8S SERVICEACCOUNT
+#---
+
 resource "kubernetes_service_account" "service_account" {
+  count = var.create_serviceaccount ? 1 : 0
+
   metadata {
     name      = var.service_account_name
     namespace = var.namespace
