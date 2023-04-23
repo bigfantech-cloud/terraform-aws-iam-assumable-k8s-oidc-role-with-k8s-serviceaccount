@@ -61,25 +61,25 @@ resource "aws_iam_role" "role" {
   assume_role_policy = data.aws_iam_policy_document.assume_policy.json
 }
 
-data "aws_iam_policy_document" "policy_document" {
+data "aws_iam_policy_document" "policy_jsons_list" {
   count                   = var.policy_jsons_list != [] ? 1 : 0
-  source_policy_documents = var.policy_jsons
+  source_policy_documents = var.policy_jsons_list
 }
 
-resource "aws_iam_policy" "policy" {
+resource "aws_iam_policy" "policy_jsons_list" {
   count = var.policy_jsons_list != [] ? 1 : 0
 
   name   = "${local.iam_role_name}Policy"
   policy = data.aws_iam_policy_document.policy_document[0].json
 }
 
-resource "aws_iam_policy_attachment" "policy_attach" {
+resource "aws_iam_policy_attachment" "policy_jsons_list" {
   name       = "${local.iam_role_name}_policy_attach"
   roles      = [aws_iam_role.role.name]
-  policy_arn = aws_iam_policy.policy.arn
+  policy_arn = aws_iam_policy.policy_jsons_list.arn
 }
 
-resource "aws_iam_role_policy_attachment" "policy" {
+resource "aws_iam_role_policy_attachment" "policy_arns_list" {
   for_each = toset(var.policy_arns_list)
 
   role       = aws_iam_role.role.name
