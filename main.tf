@@ -76,7 +76,7 @@ resource "aws_iam_policy" "policy_jsons_list" {
 resource "aws_iam_policy_attachment" "policy_jsons_list" {
   name       = "${local.iam_role_name}_policy_attach"
   roles      = [aws_iam_role.role.name]
-  policy_arn = aws_iam_policy.policy_jsons_list.arn
+  policy_arn = aws_iam_policy.policy_jsons_list[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "policy_arns_list" {
