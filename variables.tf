@@ -49,6 +49,7 @@ variable "create_serviceaccount" {
 variable "service_account_name" {
   description = "Kubernetes ServiceAccount name"
   type        = string
+  default     = null
 }
 
 variable "service_account_labels" {
