@@ -52,3 +52,4 @@ To hire, email: `bigfantech@yahoo.com`
 | --------------- | ----------------- |
 | `iam_role_arn`  | AWS IAM role ARN  |
 | `iam_role_name` | AWS IAM role name |
+| `k8s_service_account_name` | Name of the Kuberentes ServiceAccount created |
