@@ -40,8 +40,8 @@ variable "allow_self_assume_role" {
   default     = false
 }
 
-variable "create_serviceaccount" {
-  description = "Whether to create ServiceAccount or not. Default = true"
+variable "create_service_account" {
+  description = "Whether to create Kubernetes ServiceAccount or not. Default = true"
   type        = bool
   default     = true
 }
