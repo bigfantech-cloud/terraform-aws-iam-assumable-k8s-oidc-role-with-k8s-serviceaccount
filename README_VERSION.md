@@ -1,3 +1,11 @@
+# v1.0.2
+
+### Enhancement
+
+#### what changed:
+
+`k8s_service_account_name` output added
+
 # v1.0.1
 
 ### Fix
