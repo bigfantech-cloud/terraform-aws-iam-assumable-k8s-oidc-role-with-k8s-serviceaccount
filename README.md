@@ -37,7 +37,7 @@ To hire, email: `bigfantech@yahoo.com`
 | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -- | --- |
 | `iam_role_name`                                                                                    | A custom IAM role name. A preset name will be used if not specified | string | null |
 | `allow_self_assume_role`                                                                           | Whether to allow Role to self assume the role<br>Ref: https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/ | bool |   false             |
-| `create_serviceaccount`                                                                            | Whether to create ServiceAccount or not | bool |   true                    |
+| `create_service_account`                                                                            | Whether to create ServiceAccount or not | bool |   true                    |
 | `service_account_name`    | Kubernetes ServiceAccount name                                               | string | null|
 | `service_account_labels`                                                                           | ServiceAccount labels map                   | map(any) |         {}                        |
 | `additional_service_account_annotations`                                                           | Additional ServiceAccount annotations                     | map(any) |         {}                  |
