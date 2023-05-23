@@ -8,7 +8,7 @@
 
 #### reason for change:
 
-befor this `service_account_name` value was required even if `create_service_account` = false
+before this `service_account_name` value was required even if `create_service_account` = false
 
 # v1.0.0
 
