@@ -23,25 +23,24 @@ To hire, email: `bigfantech@yahoo.com`
 
 ### Required Variables
 
-| Name                      | Description                                                                  |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| `namespace`               | Kubernetes namespace to create ServiceAccount in                             |
-| `cluster_oidc_issuer_url` | EKS cluster OIDC issuer URL                                                  |
-| `oidc_provider_arn`       | EKS cluster OIDC provider ARN                                                |
-| `service_account_name`    | Kubernetes ServiceAccount name                                               |
-| `policy_jsons_list`       | List of policies JSON. `policy_jsons_list` or `policy_arns_list` is required |
-| `policy_arns_list`        | List of policies ARNS. `policy_arns_list` or `policy_jsons_list` is required |
+| Name                      | Description                                                                | Type | Default     |
+| ------------------------- | ---------------------------------------------------------------------------- | -- | --|
+| `namespace`               | Kubernetes namespace to create ServiceAccount in                            | string |  |
+| `cluster_oidc_issuer_url` | EKS cluster OIDC issuer URL                                                 | string |  |
+| `oidc_provider_arn`       | EKS cluster OIDC provider ARN                                                | string | |
+| `policy_jsons_list`       | List of policies JSON. `policy_jsons_list` or `policy_arns_list` is required | list(string) | |
+| `policy_arns_list`        | List of policies ARNS. `policy_arns_list` or `policy_jsons_list` is required | list(string) | |
 
 ### Optional Variables
 
-| Name                                                                                               | Description                                                                |
-| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `iam_role_name`                                                                                    | IAM role name. A preset name will be used if not specified. Default = null |
-| `allow_self_assume_role`                                                                           | Whether to allow Role to self assume the role. Default = false             |
-| Ref: https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/ |
-| `create_serviceaccount`                                                                            | Whether to create ServiceAccount or not. Default = true                    |
-| `service_account_labels`                                                                           | ServiceAccount labels map                                                  |
-| `additional_service_account_annotations`                                                           | Additional ServiceAccount annotations                                      |
+| Name                                                                                               | Description                                                            | Type | Default    |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -- | --- |
+| `iam_role_name`                                                                                    | A custom IAM role name. A preset name will be used if not specified | string | null |
+| `allow_self_assume_role`                                                                           | Whether to allow Role to self assume the role<br>Ref: https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/ | bool |   false             |
+| `create_serviceaccount`                                                                            | Whether to create ServiceAccount or not | bool |   true                    |
+| `service_account_name`    | Kubernetes ServiceAccount name                                               | string | null|
+| `service_account_labels`                                                                           | ServiceAccount labels map                   | map(any) |         {}                        |
+| `additional_service_account_annotations`                                                           | Additional ServiceAccount annotations                     | map(any) |         {}                  |
 
 ### Example config
 
